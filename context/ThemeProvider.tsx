@@ -13,6 +13,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const handleThemeChange = () => {
     if (
       localStorage.theme === "dark" ||
+      // and theme doesn't exist in localStorage
       (!("theme" in localStorage) &&
         window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
