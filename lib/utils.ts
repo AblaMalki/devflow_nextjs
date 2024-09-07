@@ -9,6 +9,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// getTimestamp function
 export const getTimestamp = (createdAt: Date): string => {
   const now = new Date();
   const timeDifference = now.getTime() - createdAt.getTime();
@@ -44,6 +45,8 @@ export const getTimestamp = (createdAt: Date): string => {
     return `${years} ${years === 1 ? "year" : "years"} ago`;
   }
 };
+
+// formatAndDivideNumber function
 
 export const formatAndDivideNumber = (num: number): string => {
   if (num >= 1000000) {
