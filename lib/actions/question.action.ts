@@ -7,7 +7,7 @@ import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
 import { CreateQuestionParams, DeleteQuestionParams, EditQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams, RecommendedParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
-import { FilterQuery } from "mongoose";
+// import { FilterQuery } from "mongoose";
 import { connectToDatabase } from "../mongoose";
 
 // GetQuestions function to get questions from the database
