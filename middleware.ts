@@ -7,23 +7,20 @@ export default clerkMiddleware((auth, req) => {
 });
 export const config = {
   matcher: [
-    "/",
-    "/api/webhook",
-    "/question/:id",
-    "/tags",
-    "/tags/:id",
-    "/profile/:id",
-    "/community",
-    "/jobs",
+    // // Public routes
+    // "/",
+    // "/api/webhook",
+    // "/question/:id",
+    // "/tags",
+    // "/tags/:id",
+    // "/profile/:id",
+    // "/community",
+    // "/jobs",
 
-    // Ignored routes
-    "/api/webhook",
-    "/api/chatgpt",
+    // // Ignored routes
+    // "/api/chatgpt",
 
-    // General matcher
-    "/((?!.*\\..*|_next).*)",
-    "/",
-    // Skip Next.js internals and all static files, unless found in search params
+    // General matcher: Skipping Next.js internals and all static files
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Always run for API routes
     "/(api|trpc)(.*)",
