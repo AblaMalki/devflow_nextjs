@@ -64,6 +64,8 @@ export async function getQuestions(params: GetQuestionsParams) {
   }
 }
 
+// CreateQuestion function to create a question
+
 export async function createQuestion(params: CreateQuestionParams) {
   try {
     connectToDatabase();
@@ -111,6 +113,7 @@ export async function createQuestion(params: CreateQuestionParams) {
   }
 }
 
+// GetQuestionById function to get a question by its ID
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
     connectToDatabase();
@@ -128,6 +131,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
   }
 }
 
+// UpvoteQuestion function to upvote a question
 export async function upvoteQuestion(params: QuestionVoteParams) {
   try {
     connectToDatabase();
@@ -170,6 +174,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
   }
 }
 
+// DownvoteQuestion function to downvote a question
 export async function downvoteQuestion(params: QuestionVoteParams) {
   try {
     connectToDatabase();
@@ -211,6 +216,7 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
   }
 }
 
+// DeleteQuestion function to delete a question
 export async function deleteQuestion(params: DeleteQuestionParams) {
   try {
     connectToDatabase();
@@ -228,6 +234,7 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
   }
 }
 
+// EditQuestion function to edit a question
 export async function editQuestion(params: EditQuestionParams) {
   try {
     connectToDatabase();
@@ -251,6 +258,7 @@ export async function editQuestion(params: EditQuestionParams) {
   }
 }
 
+// GetHotQuestions function to get hot questions
 export async function getHotQuestions() {
   try {
     connectToDatabase();
@@ -266,6 +274,7 @@ export async function getHotQuestions() {
   }
 }
 
+// GetRecommendedQuestions function to get recommended questions
 export async function getRecommendedQuestions(params: RecommendedParams) {
   try {
     await connectToDatabase();

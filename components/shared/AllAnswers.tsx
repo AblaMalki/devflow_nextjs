@@ -6,6 +6,7 @@ import ParseHTML from "./ParseHTML";
 import Filter from "./Filter";
 import Link from "next/link";
 import Image from "next/image";
+import Votes from "./Votes";
 
 interface Props {
   questionId: string;
@@ -62,7 +63,7 @@ const AllAnswers = async ({
                   </p>
                 </div>
               </Link>
-              {/* <div className="flex justify-end">
+              <div className="flex justify-end">
                 <Votes
                   type="Answer"
                   itemId={JSON.stringify(answer._id)}
@@ -72,7 +73,7 @@ const AllAnswers = async ({
                   downvotes={answer.downvotes.length}
                   hasdownVoted={answer.downvotes.includes(userId)}
                 />
-              </div> */}
+              </div>
             </div>
             <ParseHTML data={answer.content} />
           </article>
