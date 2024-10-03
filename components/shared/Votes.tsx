@@ -98,7 +98,7 @@ const Votes = ({
           path: pathname,
         });
       }
-      return;
+
       //   return toast({
       //     title: `Downvote ${!hasupVoted ? "Successful" : "Removed"}`,
       //     variant: !hasupVoted ? "default" : "destructive",
