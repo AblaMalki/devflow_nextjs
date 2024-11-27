@@ -264,7 +264,7 @@ export async function getHotQuestions() {
     connectToDatabase();
 
     const hotQuestions = await Question.find({})
-      .sort({ views: -1, upvotes: -1 }) 
+      .sort({ views: -1, upvotes: -1 }) // descending order of views and upvotes
       .limit(5);
 
       return hotQuestions;
