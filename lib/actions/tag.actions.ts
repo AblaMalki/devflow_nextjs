@@ -34,8 +34,46 @@ try {
 export  async function getAllTags(params:GetAllTagsParams){
     try {
         connectToDatabase();
-        const tags = await Tag.find({});
-        return{ tags};
+        const { searchQuery, filter, page = 1, pageSize = 10 } = params;
+        const skipAmount = (page - 1) * pageSize;
+        const query: FilterQuery<ITag> = {};
+
+        if(searchQuery) {
+          const escapedSearchQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+          query.$or = [{name: { $regex: new RegExp(escapedSearchQuery, 'i')}}]
+        }
+
+        let sortOptions = {};
+
+        switch (filter) {
+          case "popular":
+            sortOptions = { questions: - 1 }
+            break;
+          case "recent":
+            sortOptions = { createdAt: - 1 }
+            break;
+          case "name":
+            sortOptions = { name: 1 }
+            break;
+          case "old":
+            sortOptions = { createdAt: 1 }
+            break;
+        
+          default:
+            break;
+        }
+    
+
+        // const totalTags = await Tag.countDocuments(query);
+
+        const tags = await Tag.find(query)
+          .sort(sortOptions)
+          .skip(skipAmount)
+          .limit(pageSize);
+    
+          // const isNext = totalTags > skipAmount + tags.length;
+    
+        return{ tags };
     } catch (error) {
         console.log(error);
         throw error;
@@ -59,7 +97,7 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
           ? { title: { $regex: searchQuery, $options: 'i' }}
           : {},
         options: {
-          sort: { createdAt: -1 },
+          sort: { createdAt: - 1 },
           skip: skipAmount,
           limit: pageSize + 1 // +1 to check if there is next page
         },
@@ -93,7 +131,7 @@ export async function getTopPopularTags() {
 
     const popularTags = await Tag.aggregate([
       { $project: { name: 1, numberOfQuestions: { $size: "$questions" }}},
-      { $sort: { numberOfQuestions: -1 }}, 
+      { $sort: { numberOfQuestions: - 1 }}, 
       { $limit: 5 }
     ])
 

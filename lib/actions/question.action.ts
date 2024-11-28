@@ -1,13 +1,13 @@
 "use server"
 
-import Question from "@/database/question.model";
+import Question, { IQuestion } from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import User from "@/database/user.model";
 import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
 import { CreateQuestionParams, DeleteQuestionParams, EditQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams, RecommendedParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
-// import { FilterQuery } from "mongoose";
+import { FilterQuery } from "mongoose";
 import { connectToDatabase } from "../mongoose";
 
 // GetQuestions function to get questions from the database
@@ -19,12 +19,13 @@ export async function getQuestions(params: GetQuestionsParams) {
 
     // Calculcate the number of posts to skip based on the page number and page size
     const skipAmount = (page - 1) * pageSize;
-    // const query: FilterQuery<typeof Question> = {};
-    const query: any = {};
+     const query: FilterQuery<IQuestion> = {};
+    // const query: any = {};
 
     if(searchQuery) {
       const escapedSearchQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       query.$or = [
+        // searching either the title or the content
         { title: { $regex: new RegExp(escapedSearchQuery, "i")}},
         { content: { $regex: new RegExp(escapedSearchQuery, "i")}},
       ]
@@ -37,7 +38,7 @@ export async function getQuestions(params: GetQuestionsParams) {
         sortOptions = { createdAt: - 1 }
         break;
       case "frequent":
-        sortOptions = { views: -1 }
+        sortOptions = { views: - 1 }
         break;
       case "unanswered":
         query.answers = { $size: 0 }
@@ -309,9 +310,9 @@ export async function getRecommendedQuestions(params: RecommendedParams) {
       ...new Set(userTags.map((tag: any) => tag._id)),
     ];
 
-    // const query: FilterQuery<typeof Question>
+  
 
-    const query: any = {
+    const query: FilterQuery<IQuestion> = {
       $and: [
         { tags: { $in: distinctUserTagIds } }, // Questions with user's tags
         { author: { $ne: user._id } }, // Exclude user's own questions

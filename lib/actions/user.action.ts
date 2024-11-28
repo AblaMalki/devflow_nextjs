@@ -1,5 +1,5 @@
 "use server"
-import User from "@/database/user.model";
+import User, { IUser } from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
 import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetSavedQuestionsParams, GetUserByIdParams, GetUserStatsParams, ToggleSaveQuestionParams, UpdateUserParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
@@ -96,11 +96,46 @@ export async function getAllUsers(params:GetAllUsersParams) {
     try {
       connectToDatabase();
   
-      // const {page =1, pageSize=20, filter, searchQuery} = params;
+      const { searchQuery, filter, page = 1, pageSize = 10 } = params;
+      const skipAmount = (page - 1) * pageSize;
+      const query: FilterQuery<IUser> = {};
 
-      const users = await User.find({}).sort({createdAt: -1});
+      if(searchQuery) {
+        const escapedSearchQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        query.$or = [
+          { name: { $regex: new RegExp(escapedSearchQuery, 'i') }},
+          { username: { $regex: new RegExp(escapedSearchQuery, 'i') }},
+        ]
+      }
+     
+      let sortOptions = {};
+
+    switch (filter) {
+      case "new_users":
+        sortOptions = { joinedAt: -1 }
+        break;
+      case "old_users":
+        sortOptions = { joinedAt: 1 }
+        break;
+      case "top_contributors":
+        sortOptions = { reputation: -1 }
+        break;
+    
+      default:
+        break;
+    }
+
+       const users = await User.find(query)
+       .sort(sortOptions)
+       .skip(skipAmount)
+       .limit(pageSize)
+
+       const totalUsers = await User.countDocuments(query);
+       const isNext = totalUsers > skipAmount + users.length;
+
+       return { users, isNext };
   
-      return{ users};
+      
     } catch (error) {
       console.log(error);
       throw error;  
@@ -148,39 +183,50 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     connectToDatabase();
 
-    // const { clerkId, searchQuery, filter, page = 1, pageSize = 20 } = params;
-    const { clerkId, searchQuery } = params;
+     const { clerkId, searchQuery, filter, page = 1, pageSize = 20 } = params;
+    
 
-    // const skipAmount = (page - 1) * pageSize;
+    const skipAmount = (page - 1) * pageSize;
 
     // const query: FilterQuery<typeof IQuestion> = searchQuery
     
-    const query: FilterQuery<IQuestion> = searchQuery
-      ? { title: { $regex: new RegExp(searchQuery, 'i') } as any}
-      : { };
+    // const query: FilterQuery<IQuestion> = searchQuery
+    //   ? { title: { $regex: new RegExp(searchQuery, 'i') } as any}
+    //   : { };
+    const query: FilterQuery<IQuestion> = {};
+    // const query: any = {};
 
-      // let sortOptions = {};
+    if(searchQuery) {
+      const escapedSearchQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      query.$or = [
+        // searching either the title or the content
+        { title: { $regex: new RegExp(escapedSearchQuery, "i")}},
+        { content: { $regex: new RegExp(escapedSearchQuery, "i")}},
+      ]
+    }
 
-      // switch (filter) {
-      //   case "most_recent":
-      //     sortOptions = { createdAt: -1 }
-      //     break;
-      //   case "oldest":
-      //     sortOptions = { createdAt: 1 }
-      //     break;
-      //   case "most_voted":
-      //     sortOptions = { upvotes: -1 }
-      //     break;
-      //   case "most_viewed":
-      //     sortOptions = { views: -1 }
-      //     break;
-      //   case "most_answered":
-      //     sortOptions = { answers: -1 }
-      //     break;
+      let sortOptions = {};
+
+      switch (filter) {
+        case "most_recent":
+          sortOptions = { createdAt: -1 }
+          break;
+        case "oldest":
+          sortOptions = { createdAt: 1 }
+          break;
+        case "most_voted":
+          sortOptions = { upvotes: -1 }
+          break;
+        case "most_viewed":
+          sortOptions = { views: -1 }
+          break;
+        case "most_answered":
+          sortOptions = { answers: -1 }
+          break;
       
-      //   default:
-      //     break;
-      // }
+        default:
+          break;
+      }
 
     const user = await User
     .findOne({ clerkId })
@@ -188,9 +234,8 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       path: 'saved',
       match: query,
       options: {
-        sort:{ createdAt: -1 },
-        // sort: sortOptions,
-        // skip: skipAmount,
+         sort: sortOptions,
+         skip: skipAmount,
         // limit: pageSize + 1,
       },
       populate: [
