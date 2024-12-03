@@ -17,6 +17,7 @@ import { FilterQuery } from "mongoose";
 import Tag from "@/database/tag.model";
 import Answer from "@/database/answer.model";
 import { assignBadges } from "../utils";
+import { BadgeCriteriaType } from "@/types";
 
 // getUserById function to get user by id from the database
 export async function getUserById(params: any) {
@@ -289,12 +290,14 @@ export async function getUserInfo(params: GetUserByIdParams) {
       { $match: { author: user._id } },
       {
         $project: {
+          // id: 0, // exclude id field
           _id: 0,
           upvotes: { $size: "$upvotes" },
         },
       },
       {
         $group: {
+          // _id: null, // group by all documents
           _id: null,
           totalUpvotes: { $sum: "$upvotes" },
         },
