@@ -1,14 +1,19 @@
-import Question from '@/components/forms/Question'
-import { getUserById } from '@/lib/actions/user.action';
- import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation';
-import React from 'react'
+import Question from "@/components/forms/Question";
+import { getUserById } from "@/lib/actions/user.action";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "AsqQuestion | Devflow",
+};
 
 const Page = async () => {
-   const { userId } = auth()
+  const { userId } = auth();
   // const { userId }: { userId: string | null } = auth()
 
-  if (!userId) redirect('/sign-in');
+  if (!userId) redirect("/sign-in");
 
   const mongoUser = await getUserById({ userId });
 
@@ -17,11 +22,10 @@ const Page = async () => {
       <h1 className="h1-bold text-dark100_light900">Ask a question</h1>
 
       <div className="mt-9">
-        <Question mongoUserId={JSON.stringify(mongoUser?._id)}/>
-      
+        <Question mongoUserId={JSON.stringify(mongoUser?._id)} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;
