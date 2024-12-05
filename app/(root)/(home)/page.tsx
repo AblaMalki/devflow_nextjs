@@ -14,7 +14,7 @@ import {
 // import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 import { Metadata } from "next";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: "Home | Devflow",
