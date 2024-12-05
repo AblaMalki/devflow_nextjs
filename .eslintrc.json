@@ -5,9 +5,7 @@
     "plugin:tailwindcss/recommended",
     "prettier"
   ],
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
+  "rules": {
+    "no-undef": "off"
   }
 }
