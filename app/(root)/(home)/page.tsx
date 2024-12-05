@@ -7,21 +7,47 @@ import { HomePageFilters } from "@/constants/filters";
 import HomeFilters from "@/components/home/HomeFilters";
 import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/cards/QuestionCard";
-import { getQuestions } from "@/lib/actions/question.action";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
 import { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: "Home | Devflow",
 };
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const result = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
+  const { userId } = await auth();
+
+  // Ensure searchParams is awaited
+  const resolvedSearchParams = await searchParams;
+
+  let result;
+
+  if (resolvedSearchParams?.filter === "recommended") {
+    if (userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        searchQuery: resolvedSearchParams.q,
+        page: resolvedSearchParams.page ? +resolvedSearchParams.page : 1,
+      });
+    } else {
+      result = {
+        questions: [],
+        isNext: false,
+      };
+    }
+  } else {
+    result = await getQuestions({
+      searchQuery: resolvedSearchParams.q,
+      filter: resolvedSearchParams.filter,
+      page: resolvedSearchParams.page ? +resolvedSearchParams.page : 1,
+    });
+  }
 
   return (
     <>
@@ -75,7 +101,9 @@ export default async function Home({ searchParams }: SearchParamsProps) {
       </div>
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          pageNumber={
+            resolvedSearchParams?.page ? +resolvedSearchParams.page : 1
+          }
           isNext={result.isNext}
         />
       </div>

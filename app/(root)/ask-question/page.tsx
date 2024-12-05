@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const Page = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
   // const { userId }: { userId: string | null } = auth()
 
   if (!userId) redirect("/sign-in");
