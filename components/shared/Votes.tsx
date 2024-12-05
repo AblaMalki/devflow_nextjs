@@ -10,6 +10,7 @@ import {
 import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.actions";
 import { viewQuestion } from "@/lib/actions/interaction.action";
+import { toast } from "@/hooks/use-toast";
 
 interface Props {
   type: string;
@@ -43,12 +44,12 @@ const Votes = ({
       path: pathname,
     });
 
-    // return toast({
-    //   title: `Question ${
-    //     !hasSaved ? "Saved in" : "Removed from"
-    //   } your collection`,
-    //   variant: !hasSaved ? "default" : "destructive",
-    // });
+    return toast({
+      title: `Question ${
+        !hasSaved ? "Saved in" : "Removed from"
+      } your collection`,
+      variant: !hasSaved ? "default" : "destructive",
+    });
   };
 
   // Function to handle voting
@@ -74,11 +75,10 @@ const Votes = ({
           path: pathname,
         });
       }
-      //   return toast({
-      //     title: `Upvote ${!hasupVoted ? 'Successful' : 'Removed'}`,
-      //     variant: !hasupVoted ? 'default' : 'destructive'
-      //   })
-      return;
+      return toast({
+        title: `Upvote ${!hasupVoted ? "Successful" : "Removed"}`,
+        variant: !hasupVoted ? "default" : "destructive",
+      });
     }
     if (action === "downvote") {
       if (type === "Question") {
@@ -99,10 +99,10 @@ const Votes = ({
         });
       }
 
-      //   return toast({
-      //     title: `Downvote ${!hasupVoted ? "Successful" : "Removed"}`,
-      //     variant: !hasupVoted ? "default" : "destructive",
-      //   });
+      return toast({
+        title: `Downvote ${!hasupVoted ? "Successful" : "Removed"}`,
+        variant: !hasupVoted ? "default" : "destructive",
+      });
     }
   };
 

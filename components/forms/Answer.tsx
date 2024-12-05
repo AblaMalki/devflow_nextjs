@@ -65,38 +65,38 @@ const Answer = ({ question, questionId, authorId }: Props) => {
   };
 
   // Fuction to generate an AI answer
-  //   const generateAIAnswer = async () => {
-  //     if (!authorId) return;
+  const generateAIAnswer = async () => {
+    if (!authorId) return;
 
-  //     setSetIsSubmittingAI(true);
+    setSetIsSubmittingAI(true);
 
-  //     try {
-  //       const response = await fetch(
-  //         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
-  //         {
-  //           method: "POST",
-  //           body: JSON.stringify({ question }),
-  //         }
-  //       );
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
+        {
+          method: "POST",
+          body: JSON.stringify({ question }),
+        }
+      );
 
-  //       const aiAnswer = await response.json();
+      const aiAnswer = await response.json();
 
-  //       // Convert plain text to HTML format
+      // Convert plain text to HTML format
 
-  //       const formattedAnswer = aiAnswer.reply.replace(/\n/g, "<br />");
+      const formattedAnswer = aiAnswer.reply.replace(/\n/g, "<br />");
 
-  //       if (editorRef.current) {
-  //         const editor = editorRef.current as any;
-  //         editor.setContent(formattedAnswer);
-  //       }
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+        editor.setContent(formattedAnswer);
+      }
 
-  //       // Toast...
-  //     } catch (error) {
-  //       console.log(error);
-  //     } finally {
-  //       setSetIsSubmittingAI(false);
-  //     }
-  //   };
+      // Toast...
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSetIsSubmittingAI(false);
+    }
+  };
 
   return (
     <div>
@@ -107,7 +107,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
-          //   onClick={generateAIAnswer}
+          onClick={generateAIAnswer}
         >
           {isSubmittingAI ? (
             <>Generating...</>
