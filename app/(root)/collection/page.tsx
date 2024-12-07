@@ -84,7 +84,7 @@ const CollectionContent = async ({
 };
 
 // @ts-ignore
-export default async function Collection({
+export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;

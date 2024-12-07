@@ -11,13 +11,12 @@ const PageContent = async ({ params }: { params: { id: string } }) => {
   const mongoUser = await getUserById({ userId: params.id });
 
   return (
-    <>
+    <div>
       <h1 className="h1-bold text-dark100_light900">Edit Profile</h1>
-
       <div className="mt-9">
         <Profile clerkId={userId} user={JSON.stringify(mongoUser)} />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -29,7 +28,7 @@ export default async function Page({
 }) {
   const resolvedParams = await params;
   return (
-    <Suspense>
+    <Suspense fallback={<div>Loading...</div>}>
       <PageContent params={resolvedParams} />
     </Suspense>
   );

@@ -64,7 +64,7 @@ const CommunityContent = async ({
 };
 
 // @ts-ignore
-export default async function Community({
+export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
