@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
@@ -5,7 +6,6 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
-// import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { Metadata } from "next";
 
@@ -13,30 +13,21 @@ export const metadata: Metadata = {
   title: "Collection | Devflow",
 };
 
-// @ts-ignore
-export default async function Collection({
+const CollectionContent = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | undefined }>;
-}) {
+  searchParams: { [key: string]: string | undefined };
+}) => {
   const { userId } = await auth();
 
   if (!userId) return null;
 
-  const params = await searchParams;
   const result = await getSavedQuestions({
     clerkId: userId,
-    searchQuery: params.q,
-    filter: params.filter,
-    page: params.page ? +params.page : 1,
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
-
-  // const result = await getSavedQuestions({
-  //   clerkId: userId,
-  //   searchQuery: searchParams.q,
-  //   filter: searchParams.filter,
-  //   page: searchParams.page ? +searchParams.page : 1,
-  // });
 
   return (
     <>
@@ -84,10 +75,23 @@ export default async function Collection({
 
       <div className="mt-10">
         <Pagination
-          pageNumber={params.page ? +params.page : 1}
+          pageNumber={searchParams.page ? +searchParams.page : 1}
           isNext={result.isNext}
         />
       </div>
     </>
+  );
+};
+
+// @ts-ignore
+export default async function Collection({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CollectionContent searchParams={await searchParams} />
+    </Suspense>
   );
 }

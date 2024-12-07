@@ -4,28 +4,24 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
-// import { SearchParamsProps } from "@/types";
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Community | Devflow",
 };
 
-const Community = async ({
+const CommunityContent = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | undefined }>;
+  searchParams: { [key: string]: string | undefined };
 }) => {
-  const params = await searchParams;
   const result = await getAllUsers({
-    searchQuery: params.q,
-    filter: params.filter,
-    page: params.page ? +params.page : 1,
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
-
-  //   const UserCard = dynamic(() => import('@/components/cards/UserCard'), { ssr: false })
 
   return (
     <>
@@ -59,7 +55,7 @@ const Community = async ({
 
       <div className="mt-10">
         <Pagination
-          pageNumber={params?.page ? +params.page : 1}
+          pageNumber={searchParams.page ? +searchParams.page : 1}
           isNext={result.isNext}
         />
       </div>
@@ -67,7 +63,15 @@ const Community = async ({
   );
 };
 
-export default Community;
-
-//  const isLoading = true;
-//  if (isLoading) return <Loading />;
+// @ts-ignore
+export default async function Community({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CommunityContent searchParams={await searchParams} />
+    </Suspense>
+  );
+}
