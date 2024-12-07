@@ -2,12 +2,15 @@ import Profile from "@/components/forms/Profile";
 import { getUserById } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
 
-const Page = async ({ params }: { params: { id: string } }) => {
+const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { userId } = await auth();
 
   if (!userId) return null;
 
-  const mongoUser = await getUserById({ userId });
+  // Ensure params is awaited
+  const resolvedParams = await params;
+
+  const mongoUser = await getUserById({ userId: resolvedParams.id });
 
   return (
     <>

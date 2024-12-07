@@ -17,15 +17,25 @@ export const metadata: Metadata = {
   title: "Question | Devflow",
 };
 
-const page = async ({ params, searchParams }: any) => {
+const page = async ({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) => {
   const { userId: clerkId } = await auth();
+
+  // Ensure params and searchParams are awaited
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
 
   let mongoUser;
 
   if (clerkId) {
     mongoUser = await getUserById({ userId: clerkId });
   }
-  const result = await getQuestionById({ questionId: params.id });
+  const result = await getQuestionById({ questionId: resolvedParams.id });
   return (
     <>
       <div className="flex-start w-full flex-col">
@@ -102,8 +112,12 @@ const page = async ({ params, searchParams }: any) => {
         questionId={result._id}
         userId={mongoUser?._id}
         totalAnswers={result.answers.length}
-        page={searchParams?.page}
-        filter={searchParams?.filter}
+        page={
+          resolvedSearchParams?.page
+            ? Number(resolvedSearchParams.page)
+            : undefined
+        }
+        filter={resolvedSearchParams?.filter}
       />
 
       <Answer
