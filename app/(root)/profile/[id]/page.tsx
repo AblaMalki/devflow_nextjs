@@ -4,11 +4,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getUserInfo } from "@/lib/actions/user.action";
 import { getJoinedDate } from "@/lib/utils";
-// import { URLProps } from "@/types";
 import { SignedIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import ProfileLink from "@/components/shared/ProfileLink";
 import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
@@ -23,14 +21,14 @@ const ProfilePage = async ({
   params,
   searchParams,
 }: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ [key: string]: string | undefined }>;
+  params: { id: string };
+  searchParams: { [key: string]: string | undefined };
 }) => {
   const { userId: clerkId } = await auth();
 
   // Ensure params and searchParams are awaited
-  const resolvedParams = await params;
-  const resolvedSearchParams = await searchParams;
+  const resolvedParams = params;
+  const resolvedSearchParams = searchParams;
 
   const userInfo = await getUserInfo({ userId: resolvedParams.id });
 
