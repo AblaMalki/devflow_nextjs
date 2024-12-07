@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getUserInfo } from "@/lib/actions/user.action";
 import { getJoinedDate } from "@/lib/utils";
-import { URLProps } from "@/types";
+// import { URLProps } from "@/types";
 import { SignedIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,9 +19,20 @@ export const metadata: Metadata = {
   title: "Profile | Devflow",
 };
 
-const ProfilePage = async ({ params, searchParams }: URLProps) => {
+const ProfilePage = async ({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) => {
   const { userId: clerkId } = await auth();
-  const userInfo = await getUserInfo({ userId: params.id });
+
+  // Ensure params and searchParams are awaited
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+
+  const userInfo = await getUserInfo({ userId: resolvedParams.id });
 
   return (
     <>
@@ -108,14 +119,14 @@ const ProfilePage = async ({ params, searchParams }: URLProps) => {
             className="mt-5 flex w-full flex-col gap-6"
           >
             <QuestionTab
-              searchParams={searchParams}
+              searchParams={resolvedSearchParams}
               userId={userInfo.user._id}
               clerkId={clerkId}
             />
           </TabsContent>
           <TabsContent value="answers" className="flex w-full flex-col gap-6">
             <AnswersTab
-              searchParams={searchParams}
+              searchParams={resolvedSearchParams}
               userId={userInfo.user._id}
               clerkId={clerkId}
             />
