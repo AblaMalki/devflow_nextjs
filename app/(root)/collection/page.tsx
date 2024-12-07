@@ -5,7 +5,7 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
-// import { SearchParamsProps } from "@/types";
+import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { Metadata } from "next";
 
@@ -13,11 +13,8 @@ export const metadata: Metadata = {
   title: "Collection | Devflow",
 };
 
-export default async function Collection({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) {
+// @ts-ignore
+export default async function Collection({ searchParams }: SearchParamsProps) {
   const { userId } = await auth();
 
   if (!userId) return null;
