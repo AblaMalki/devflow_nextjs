@@ -20,7 +20,6 @@ const PageContent = async ({ params }: { params: { id: string } }) => {
   );
 };
 
-// @ts-ignore
 export default async function Page({
   params,
 }: {
