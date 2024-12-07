@@ -21,14 +21,14 @@ const ProfilePage = async ({
   params,
   searchParams,
 }: {
-  params: { id: string };
-  searchParams: { [key: string]: string | undefined };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) => {
   const { userId: clerkId } = await auth();
 
   // Ensure params and searchParams are awaited
-  const resolvedParams = params;
-  const resolvedSearchParams = searchParams;
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
 
   const userInfo = await getUserInfo({ userId: resolvedParams.id });
 
