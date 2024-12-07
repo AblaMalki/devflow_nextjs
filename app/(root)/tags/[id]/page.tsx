@@ -3,13 +3,23 @@ import NoResult from "@/components/shared/NoResult";
 import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { getQuestionsByTagId } from "@/lib/actions/tag.actions";
-import { URLProps } from "@/types";
+// import { URLProps } from "@/types";
 
-const Page = async ({ params, searchParams }: URLProps) => {
+const Page = async ({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) => {
+  // Ensure params and searchParams are awaited
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+
   const result = await getQuestionsByTagId({
-    tagId: params.id,
-    page: searchParams.page ? +searchParams.page : 1,
-    searchQuery: searchParams.q,
+    tagId: resolvedParams.id,
+    page: resolvedSearchParams.page ? +resolvedSearchParams.page : 1,
+    searchQuery: resolvedSearchParams.q,
   });
 
   return (
@@ -18,7 +28,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
       <div className="mt-11 w-full">
         <LocalSearchbar
-          route={`/tags/${params.id}`}
+          route={`/tags/${resolvedParams.id}`}
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search tag questions"
@@ -53,7 +63,9 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          pageNumber={
+            resolvedSearchParams?.page ? +resolvedSearchParams.page : 1
+          }
           isNext={result.isNext}
         />
       </div>

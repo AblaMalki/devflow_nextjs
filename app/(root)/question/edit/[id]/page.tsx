@@ -1,16 +1,22 @@
 import Question from "@/components/forms/Question";
 import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
-import { ParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 
-const EditQuestionPage = async ({ params }: ParamsProps) => {
+const EditQuestionPage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
   const { userId } = await auth();
 
   if (!userId) return null;
 
+  // Ensure params is awaited
+  const resolvedParams = await params;
+
   const mongoUser = await getUserById({ userId });
-  const result = await getQuestionById({ questionId: params.id });
+  const result = await getQuestionById({ questionId: resolvedParams.id });
 
   return (
     <>
