@@ -27,9 +27,10 @@ export default async function Page({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const resolvedParams = await params;
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <PageContent params={await params} />
+    <Suspense>
+      <PageContent params={resolvedParams} />
     </Suspense>
   );
 }

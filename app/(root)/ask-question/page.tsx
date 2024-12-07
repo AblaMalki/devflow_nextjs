@@ -31,15 +31,14 @@ const PageContent = async () => {
 
   const mongoUser = await getUserById({ userId });
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      {/* Pass props to the client component */}
-      <AskQuestionClient mongoUserId={JSON.stringify(mongoUser?._id)} />
-    </Suspense>
-  );
+  return <AskQuestionClient mongoUserId={JSON.stringify(mongoUser?._id)} />;
 };
 
 // Main Page Component
-export default function Page() {
-  return <PageContent />;
+export default async function Page() {
+  return (
+    <Suspense>
+      <PageContent />
+    </Suspense>
+  );
 }

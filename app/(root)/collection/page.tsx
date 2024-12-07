@@ -89,9 +89,10 @@ export default async function Collection({
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CollectionContent searchParams={await searchParams} />
+    <Suspense>
+      <CollectionContent searchParams={resolvedSearchParams} />
     </Suspense>
   );
 }

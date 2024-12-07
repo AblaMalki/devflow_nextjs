@@ -92,9 +92,10 @@ export default async function Page({
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <PageContent searchParams={await searchParams} />
+      <PageContent searchParams={resolvedSearchParams} />
     </Suspense>
   );
 }

@@ -69,9 +69,10 @@ export default async function Community({
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CommunityContent searchParams={await searchParams} />
+    <Suspense>
+      <CommunityContent searchParams={resolvedSearchParams} />
     </Suspense>
   );
 }
