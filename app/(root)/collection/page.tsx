@@ -5,7 +5,7 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
-import { SearchParamsProps } from "@/types";
+// import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { Metadata } from "next";
 
@@ -14,17 +14,29 @@ export const metadata: Metadata = {
 };
 
 // @ts-ignore
-export default async function Collection({ searchParams }: SearchParamsProps) {
+export default async function Collection({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
   const { userId } = await auth();
 
   if (!userId) return null;
 
+  const params = await searchParams;
   const result = await getSavedQuestions({
     clerkId: userId,
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
+    searchQuery: params.q,
+    filter: params.filter,
+    page: params.page ? +params.page : 1,
   });
+
+  // const result = await getSavedQuestions({
+  //   clerkId: userId,
+  //   searchQuery: searchParams.q,
+  //   filter: searchParams.filter,
+  //   page: searchParams.page ? +searchParams.page : 1,
+  // });
 
   return (
     <>
@@ -72,7 +84,7 @@ export default async function Collection({ searchParams }: SearchParamsProps) {
 
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          pageNumber={params.page ? +params.page : 1}
           isNext={result.isNext}
         />
       </div>
