@@ -4,7 +4,7 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
-import { SearchParamsProps } from "@/types";
+// import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 import React from "react";
 import { Metadata } from "next";
@@ -13,11 +13,16 @@ export const metadata: Metadata = {
   title: "Community | Devflow",
 };
 
-const Community = async ({ searchParams }: SearchParamsProps) => {
+const Community = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) => {
+  const params = await searchParams;
   const result = await getAllUsers({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
+    searchQuery: params.q,
+    filter: params.filter,
+    page: params.page ? +params.page : 1,
   });
 
   //   const UserCard = dynamic(() => import('@/components/cards/UserCard'), { ssr: false })
@@ -54,7 +59,7 @@ const Community = async ({ searchParams }: SearchParamsProps) => {
 
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          pageNumber={params?.page ? +params.page : 1}
           isNext={result.isNext}
         />
       </div>
